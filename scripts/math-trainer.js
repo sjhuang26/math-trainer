@@ -21,6 +21,19 @@ define([
     {
       major: 2,
       minor: 0,
+      patch: 1,
+      majorAppUpdates: [],
+      minorAppUpdates: [
+        "Fixed app not loading issue."
+      ],
+      majorInternalUpdates: [],
+      minorInternalUpdates: [
+        "Got rid of Underscore.js dependency because it wasn't being used."
+      ]
+    },
+    {
+      major: 2,
+      minor: 0,
       patch: 0,
       majorAppUpdates: [
         "Simplified the app down to just a question viewer."

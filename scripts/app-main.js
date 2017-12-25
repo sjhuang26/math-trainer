@@ -6,9 +6,6 @@ requirejs.config({
     "storejs": {
       exports: "store"
     },
-    "underscorejs": {
-      exports: "_"
-    },
     "vue": {
       exports: "Vue"
     },
@@ -33,14 +30,13 @@ requirejs.config({
     "object-manager": "lib/object-manager",
     "question": "lib/question/question",
     "question-loader": "lib/question/question-loader",
-    "underscorejs": "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js",
     "vue": "https://vuejs.org/js/vue",
     "wiki-loader": "lib/aops-wiki/wiki-loader",
     "wiki-question-parser": "lib/aops-wiki/wiki-question-parser"
   }
 });
 
-requirejs(["jquery", "vue", "math-trainer", "underscorejs", "bootstrap"], function($, Vue, app, _) {
+requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) {
   $(() => {
     Vue.component("app-math-trainer", {
       template: "#template-app-math-trainer",
