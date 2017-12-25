@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon/favicon.ico">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" crossorigin="anonymous">
+    
+    <!-- Require JS -->
+    <script data-main="scripts/app-main" src="scripts/require.js"></script>
+  </head>
+  <body>
+    <!-- <app-math-trainer> -->
+    <template type="text/x-template" id="template-app-math-trainer">
+      <div>
+        <app-navigation :items="pages" :active-item.sync="currentPage">
+          <test-select slot="inline-form" :tests="tests" :default-test="0" @navigate="navigateTest"></test-select>
+        </app-navigation>
+        <div class="container-fluid">
+          <app-switcher :items="pages" :active-item="currentPage">
+            <page-browse slot="Browse" :test-object="testObject"></page-browse>
+            <page-about slot="About" :versions="versions"></page-about>
+          </app-switcher>
+        </div>
+      </div>
+    </template>
+
+    <!-- <app-navigation> -->
+    <template type="text/x-template" id="template-app-navigation">
+      <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" style="color:white">Math Trainer</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <app-navigation-item @activate="activate(index)" :active="index === activeItem" v-for="(item, index) in items" :key="index">{{ item }}</app-navigation-item>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <slot name="inline-form"></slot>
+          </form>
+        </div>
+      </nav>
+    </template>
+
+    <!-- <app-navigation-item> -->
+    <template type="text/x-template" id="template-app-navigation-item">
+      <li class="nav-item" :class='{active: active}'>
+        <a class="nav-link" v-on:click="activate"><slot></slot></a>
+      </li>
+    </template>
+
+    <!-- <app-switcher> -->
+    <template type="text/x-template" id="template-app-switcher">
+      <div>
+        <slot v-for="(item, index) in items" v-if="index === activeItem" :name="item"></slot>
+      </div>
+    </template>
+    
+    <!-- <loader> -->
+    <template type="text/x-template" id="template-loader">
+      <div>
+        <div v-if="isLoading">
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">Loading</div>
+          </div>
+        </div>
+        <div v-else-if="isError">
+          <div class="card">
+            <div class="card-header">Error</div>
+            <div class="card-body">
+              <h4 class="card-title">{{ shortErrorDescription }}</h4>
+              <p class="card-text">{{ longErrorDescription }}</p>
+              <button class="btn btn-primary" @click="tryAgain">Try again</button>
+              <a class="btn btn-primary" target="_blank" :href="wikiViewLink">View on wiki</a>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <slot></slot>
+        </div>
+      </div>
+    </template>
+    
+    <!-- <page-about> -->
+    <template type="text/x-template" id="template-page-about">
+      <div class="row">
+        <div class="col">
+          <h1 class="display-3">About Math Trainer</h1>
+          <p class="lead">Math Trainer offers an AMC and AIME viewing interface better than the AoPS Wiki.</p>
+          
+          <version-display :versions="versions"></version-display>
+          
+          <h2>Credits</h2>
+          <p>Behind the scenes, Math Trainer uses the following tools:</p>
+          <ul>
+            <li>Material Icons</li>
+            <li>Bootstrap 4</li>
+            <li>Require.js</li>
+            <li>jQuery</li>
+            <li>Underscore.js</li>
+            <li>Vue</li>
+          </ul>
+          <p>Favicon: <a href="https://clix.tiss.edu/wp-content/uploads/2015/12/curriculum-icons-mathematics-1.png">Image</a> from <a href="https://clix.tiss.edu/curriculum/mathematics/">here</a> (cropped).</p>
+        </div>
+      </div>
+    </template>
+
+    <!-- <page-browse> -->
+    <template type="text/x-template" id="template-page-browse">
+      <div>
+        <div class="row">
+          <div class="col">
+            <ytq-classification-selector :test-object="testObject" :can-refresh="canRefresh"
+            :default-year="defaultYear" :default-alternate="defaultAlternate"
+            :default-question="defaultQuestion"
+            @navigate="loadQuestion"
+            :question-i-d="questionID"></ytq-classification-selector>
+            <loader v-if="displayQuestion" :is-error="isError"
+            :is-loading="isLoading"
+            :short-error-description="shortErrorDescription"
+            :long-error-description="longErrorDescription"
+            @try-again="tryAgain"
+            :wiki-view-link="wikiViewLink">
+              <problem-display :problem="problem" :question-page-name="questionPageName" :wiki-view-link="wikiViewLink" :wiki-edit-link="wikiEditLink"></problem-display>
+              <solution-toggle>
+                <solution-display :solutions="solutions" :answer="answer"></solution-display>
+              </solution-toggle>
+            </loader>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- <problem-display> -->
+    <template type="text/x-template" id="template-problem-display">
+      <div>
+        <div v-html="problem"></div>
+        <small class="text-muted">{{ questionPageName }} | <a :href="wikiViewLink" target="_blank">View in wiki</a> | <a :href="wikiEditLink" target="_blank">Edit on wiki</a></small>
+      </div>
+    </template>
+    
+    <!-- <solution-toggle> -->
+    <template type="text/x-template" id="template-solution-toggle">
+      <div>
+        <button class="btn btn-outline-primary btn-block" data-toggle="collapse" :data-target='"#" + uniqueID'>{{ solutionToggleText }}</button>
+        <div ref="toggle" class="collapse" :id="uniqueID">
+          <slot></slot>
+        </div>
+      </div>
+    </template>
+    
+    <!-- <solution-display> -->
+    <template type="text/x-template" id="template-solution-display">
+      <div>
+        <div class="card">
+          <div class="card-body"><p class="card-text">Answer: {{ answer }}</p></div>
+        </div>
+        <div v-for="(solution, index) in solutions">
+          <h3>Solution {{ index + 1 }}</h3>
+          <div v-html="solution"></div>
+        </div>
+      </div>
+    </template>
+
+    <!-- <ytq-classification-selector> -->
+    <template type="text/x-template" id="template-ytq-classification-selector">
+      <form class="form-inline" @submit.prevent="navigate">
+        <div class="input-group">
+          <span class="input-group-addon">Year</span>
+          <input type="text" class="form-control" v-model.number="year">
+          <select class="form-control" v-if="alternates.length !== 0 && isAlternateYear" v-model="alternate">
+            <option v-for="(item, index) in alternates" :value="index">{{ item }}</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon">Question</span>
+          <span class="input-group-btn">
+            <button class="btn btn-secondary" v-if="canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 75%">&#xE5C4;</i></button>
+          </span>
+          <input type="text" class="form-control" v-model.number="question">
+          <span class="input-group-btn">
+            <button class="btn btn-secondary" v-if="canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 75%">&#xE5C8;</i></button>
+          </span>
+        </div>
+        <button class="btn btn-success" :disabled="!isValid">Go</button>
+        <button class="btn btn-secondary" @click="refresh" :disabled="!canRefresh">Refresh</button>
+      </form>
+    </template>
+    
+    <!-- <test-select> -->
+    <template type="text/x-template" id="template-test-select">
+      <select class="form-control" v-model="test" @change="navigate">
+        <option v-for="(item, index) in tests" :value="index">{{ item }}</option>
+      </select>
+    </template>
+    
+    <!-- <version-display> -->
+    <template type="text/x-template" id="template-version-display">
+      <div>
+        <p><i>Version {{ versions[0].major }}.{{ versions[0].minor }}.{{ versions[0].patch }}{{ versions[0].identifierText }}</i></p>
+        <h2>Updates</h2>
+        <div v-for="version in versions" class="card my-4">
+          <div class="card-header">Version {{ version.status }} {{ version.major }}.{{ version.minor }}.{{ version.patch }}{{ version.identifierText }}</div>
+          <div class="card-body">
+            <ul v-if="version.majorAppUpdates.length > 0">
+              <li v-for="item in version.majorAppUpdates">{{ item }}</li>
+            </ul>
+
+            <div v-if="version.minorAppUpdates.length > 0">
+              <p v-if="version.majorAppUpdates.length > 0">Also:</p>
+              <ul>
+                <li v-for="item in version.minorAppUpdates">{{ item }}</li>
+              </ul>
+            </div>
+
+            <h3 v-if="version.majorInternalUpdates.length > 0 || version.minorInternalUpdates.length > 0">Internal updates</h3>
+
+            <ul v-if="version.majorInternalUpdates.length > 0">
+              <li v-for="item in version.majorInternalUpdates">{{ item }}</li>
+            </ul>
+
+            <div v-if="version.minorInternalUpdates.length > 0">
+              <p v-if="version.majorInternalUpdates.length > 0">Also:</p>
+              <ul>
+                <li v-for="item in version.minorInternalUpdates">{{ item }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+    
+    <!-- Finally, some non-template HTML! :) -->
+    <app-math-trainer id="app-math-trainer"></app-math-trainer>
+  </body>
+</html>
