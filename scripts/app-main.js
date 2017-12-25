@@ -33,7 +33,7 @@ requirejs.config({
     "object-manager": "lib/object-manager",
     "question": "lib/question/question",
     "question-loader": "lib/question/question-loader",
-    "underscorejs": "http://underscorejs.org/underscore-min",
+    "underscorejs": "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js",
     "vue": "https://vuejs.org/js/vue",
     "wiki-loader": "lib/aops-wiki/wiki-loader",
     "wiki-question-parser": "lib/aops-wiki/wiki-question-parser"
