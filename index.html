@@ -61,7 +61,10 @@
     <!-- <app-switcher> -->
     <template type="text/x-template" id="template-app-switcher">
       <div>
-        <slot v-for="(item, index) in items" v-if="index === activeItem" :name="item"></slot>
+        <div v-for="(item, index) in items" :key="index" v-show="index === activeItem">
+          <!-- Wrapped like this because v-show does not work with slot. -->
+          <slot :name="item"></slot>
+        </div>
       </div>
     </template>
     
@@ -69,9 +72,8 @@
     <template type="text/x-template" id="template-loader">
       <div>
         <div v-if="isLoading">
-          <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">Loading</div>
-          </div>
+          <img src="images/loading.svg" class="m-auto d-block" />
+          <p class="text-center lead font-weight-bold" style="margin-top: -3rem">Loading...</p>
         </div>
         <div v-else-if="isError">
           <div class="card">
@@ -95,8 +97,9 @@
       <div class="row">
         <div class="col">
           <h1 class="display-3">About Math Trainer</h1>
-          <p class="lead">Math Trainer offers an AMC and AIME viewing interface better than the AoPS Wiki.</p>
-          
+          <p class="lead">Math Trainer is an easy-to-use AMC and AIME viewing interface.</p>
+          <p>All questions are loaded from the Art of Problem Solving wiki.</p>
+
           <version-display :versions="versions"></version-display>
           
           <h2>Credits</h2>
@@ -109,6 +112,8 @@
             <li>Vue</li>
           </ul>
           <p>Favicon: <a href="https://clix.tiss.edu/wp-content/uploads/2015/12/curriculum-icons-mathematics-1.png">Image</a> from <a href="https://clix.tiss.edu/curriculum/mathematics/">here</a> (cropped).</p>
+          <p>Loader: made with <a href="https://loading.io">loading.io.</a></p>
+          <p>This software is open source (MIT License).</p>
         </div>
       </div>
     </template>
@@ -116,13 +121,17 @@
     <!-- <page-browse> -->
     <template type="text/x-template" id="template-page-browse">
       <div>
-        <div class="row">
+        <div class="row pt-1 sticky-top bg-light">
           <div class="col">
             <ytq-classification-selector :test-object="testObject" :can-refresh="canRefresh"
             :default-year="defaultYear" :default-alternate="defaultAlternate"
             :default-question="defaultQuestion"
             @navigate="loadQuestion"
             :question-i-d="questionID"></ytq-classification-selector>
+          </div>
+        </div>
+        <div class="row pt-1">
+          <div class="col">
             <loader v-if="displayQuestion" :is-error="isError"
             :is-loading="isLoading"
             :short-error-description="shortErrorDescription"
@@ -173,25 +182,25 @@
     <!-- <ytq-classification-selector> -->
     <template type="text/x-template" id="template-ytq-classification-selector">
       <form class="form-inline" @submit.prevent="navigate">
-        <div class="input-group">
+        <div class="input-group mb-1 mr-1">
           <span class="input-group-addon">Year</span>
           <input type="text" class="form-control" v-model.number="year">
           <select class="form-control" v-if="alternates.length !== 0 && isAlternateYear" v-model="alternate">
             <option v-for="(item, index) in alternates" :value="index">{{ item }}</option>
           </select>
         </div>
-        <div class="input-group">
+        <div class="input-group mb-1 mr-1">
           <span class="input-group-addon">Question</span>
           <span class="input-group-btn">
-            <button class="btn btn-secondary" v-if="canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 75%">&#xE5C4;</i></button>
+            <button class="btn btn-secondary" :disabled="!canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 75%">&#xE5C4;</i></button>
           </span>
           <input type="text" class="form-control" v-model.number="question">
           <span class="input-group-btn">
-            <button class="btn btn-secondary" v-if="canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 75%">&#xE5C8;</i></button>
+            <button class="btn btn-secondary" :disabled="!canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 75%">&#xE5C8;</i></button>
           </span>
         </div>
-        <button class="btn btn-success" :disabled="!isValid">Go</button>
-        <button class="btn btn-secondary" @click="refresh" :disabled="!canRefresh">Refresh</button>
+        <button class="btn btn-success mb-1 mr-1" :disabled="!isValid">Go</button>
+        <button class="btn btn-secondary mb-1 mr-1" @click="refresh" :disabled="!canRefresh">Refresh</button>
       </form>
     </template>
     

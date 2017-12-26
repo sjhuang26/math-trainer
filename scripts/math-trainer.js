@@ -21,6 +21,21 @@ define([
     {
       major: 2,
       minor: 0,
+      patch: 2,
+      majorAppUpdates: [],
+      minorAppUpdates: [
+        "Revised app description.",
+        "Fixed clearing of Browse question when the About page is opened.",
+        "Made a fancier loader.",
+        "Enhanced the question selector."
+      ],
+      majorInternalUpdates: [],
+      minorInternalUpdates: [
+      ]
+    },
+    {
+      major: 2,
+      minor: 0,
       patch: 1,
       majorAppUpdates: [],
       minorAppUpdates: [
