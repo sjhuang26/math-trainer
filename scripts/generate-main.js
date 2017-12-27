@@ -1,17 +1,7 @@
-/* WORK IN PROGRESS. DOES NOT WORK. */
 requirejs.config({
   shim: {
     "bootstrap": {
       deps: ["jquery", "popper-loader"]
-    },
-    "storejs": {
-      exports: "store"
-    },
-    "underscorejs": {
-      exports: "_"
-    },
-    "vue": {
-      exports: "Vue"
     },
     "popperjs": {
       deps: ["jquery"],
@@ -21,63 +11,67 @@ requirejs.config({
     }
   },
   paths: {
-    "aime-classes": "lib/aime/aime-classes",
-    "aime-loader": "lib/aime/aime-loader",
-    "amc-10-classes": "lib/amc-10/amc-10-classes",
-    "amc-10-loader": "lib/amc-10/amc-10-loader",
-    "amc-12-classes" :"lib/amc-12/amc-12-classes",
-    "amc-12-loader": "lib/amc-12/amc-12-loader",
+    "aime-util": "lib/aime/aime-util",
+    "amc-10-util": "lib/amc-10/amc-10-util",
+    "amc-12-util": "lib/amc-12/amc-12-util",
+    "classification-system": "lib/question/classification-system",
     "bootstrap": "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min",
-    "cachejs": "lib/cache",
-    "deepmerge": "lib/deepmerge-1.5.1",
-    "default-test-classes": "lib/default-test-utilities/default-test-classes",
-    "default-test-loader": "lib/default-test-utilities/default-test-loader",
     "jquery": "https://code.jquery.com/jquery-3.2.1.min",
     "math-trainer": "math-trainer",
-    "pathjs": "lib/path",
-    "persistjs" :"lib/persist",
+    "pathjs": "lib/pathjs",
+    "promise-util" :"lib/promise-util",
     "popperjs": "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min",
     "popper-loader": "popper-loader",
-    "object-manager": "lib/object-manager",
-    "questionjs": "lib/question",
-    "storejs": "https://cdn.rawgit.com/marcuswestin/store.js/2b486f1f/dist/store.modern.min",
-    "storagejs": "lib/storage",
-    "test-module-packager": "lib/test-module-packager",
-    "underscorejs": "http://underscorejs.org/underscore-min",
-    "vue": "https://vuejs.org/js/vue",
+    "question": "lib/question/question",
+    "question-loader": "lib/question/question-loader",
     "wiki-loader": "lib/aops-wiki/wiki-loader",
     "wiki-question-parser": "lib/aops-wiki/wiki-question-parser"
   }
 });
 
-requirejs(["test-module-packager"], (test) => {
-  // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-  function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-  }
-
+requirejs(["jquery", "math-trainer"], ($, app) => {
   function out(html) {
-    document.getElementById("content").innerHTML = html;
+    $("#output").append(html);
   }
 
-  try {
-    var testFound = false;
-    var testName = getParameterByName("test");
-    for (var data of test.TEST_DATA) {
-      if (data.systemName === testName || data.name === testName) {
-        testFound = true;
-      }
+  function outTag(tagName, content, extra) {
+    out("<" + tagName + (extra === undefined ? "" : extra) + ">" + content + "</" + tagName + ">");
+  }
+
+  $(() => {
+    // https://stackoverflow.com/questions/8648892/convert-url-parameters-to-a-javascript-object
+    var params = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+    console.log(params);
+    if (params.question !== undefined) {
+      var testObject = app.test.fromName(params.test).util;
+      testObject.Loader.loadQuestion(new app.ytqid(testObject.ClassificationSystem, parseInt(params.year), parseInt(params.alternate), parseInt(params.question)))
+          .then(question => {
+        outTag("h1", testObject.ClassificationSystem.getString(question.questionID));
+        outTag("h2", "Problem");
+        out(question.problem);
+        outTag("p", "Answer: " + question.answer, ' class="lead"');
+        for (var i = 0; i < question.solutions.length; i++) {
+          outTag("h2", "Solution " + (i + 1));
+          out(question.solutions[i]);
+        }
+      });
+    } else {
+      var testObject = app.test.fromName(params.test).util;
+      var testID = new app.ytqid(testObject.ClassificationSystem, parseInt(params.year), parseInt(params.alternate), 1);
+      testObject.Loader.loadTestWithSolutions(testID)
+          .then(questions => {
+        outTag("h1", testObject.ClassificationSystem.getTestString(testID));
+        for (var question of questions) {
+          outTag("h2", "Question " + question.questionID.question);
+          outTag("h3", "Problem");
+          out(question.problem);
+          outTag("p", "Answer: " + question.answer, ' class="lead font-weight-bold"');
+          for (var i = 0; i < question.solutions.length; i++) {
+            outTag("h4", "Solution " + (i + 1));
+            out(question.solutions[i]);
+          }
+        }
+      });
     }
-    if (!testFound) throw "Error: no test found";
-  }
-  catch (e) {
-    out("<h1>Error</h1>");
-    out(e);
-  }
+  });
 });

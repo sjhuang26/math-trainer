@@ -42,7 +42,7 @@ define(["jquery"], ($) => {
         success: (response) => {
           if (response.error) {
             if (response.error.code === "missingtitle") {
-              reject(new LoadError(LoadError.errorType.MISSING_PAGE));
+              reject(new LoadError(LoadError.errorType.MISSING_PAGE, {page: page}));
             } else {
               reject(new LoadError(LoadError.errorType.OTHER, response));
             }

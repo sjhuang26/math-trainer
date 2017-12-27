@@ -28,6 +28,20 @@ define(["classification-system"], (classificationSystem) => {
       throw "abstract";
     }
 
+    /**
+     * @abstract
+     */
+    static getString(ytqid) {
+      throw "abstract";
+    }
+
+    /**
+     * @abstract
+     */
+    static getTestString(ytqid) {
+      throw "abstract";
+    }
+
     static isYearValid(year) {
       return this.FIRST_YEAR <= year &&
           year <= new Date().getFullYear();

@@ -3,9 +3,6 @@ requirejs.config({
     "bootstrap": {
       deps: ["jquery", "popper-loader"]
     },
-    "storejs": {
-      exports: "store"
-    },
     "vue": {
       exports: "Vue"
     },
@@ -27,7 +24,7 @@ requirejs.config({
     "pathjs": "lib/pathjs",
     "popperjs": "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min",
     "popper-loader": "popper-loader",
-    "object-manager": "lib/object-manager",
+    "promise-util": "lib/promise-util",
     "question": "lib/question/question",
     "question-loader": "lib/question/question-loader",
     "vue": "https://vuejs.org/js/vue",
@@ -46,8 +43,7 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
           tests: app.test.testNames,
           test: 0,
           pages: ["Browse", "About"],
-          versions: app.VERSIONS,
-          errorModalDetails: "Details did not load ...?"
+          versions: app.VERSIONS
         };
       },
       methods: {
@@ -348,10 +344,6 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
         },
         navigate() {
           this.$emit("navigate", this.questionID);
-        },
-        refresh() {
-          //this.$emit("invalidate", this.questionID); // TODO possible bug
-          this.navigate();
         }
       },
       computed: {

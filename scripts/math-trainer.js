@@ -6,7 +6,7 @@ define([
   "question",
   "pathjs",
   "wiki-loader",
-  "wiki-question-parser"
+  "wiki-question-parser",
 ], (
   aimeUtil,
   amc10Util,
@@ -18,6 +18,22 @@ define([
   wikiQuestionParser
 ) => {
   var VERSIONS = [
+    {
+      major: 2,
+      minor: 1,
+      patch: 0,
+      majorAppUpdates: [
+        "Added ability to print out old tests and questions, but the feature is buried under generate.html."
+      ],
+      minorAppUpdates: [
+        "Removed Refresh button."
+      ],
+      majorInternalUpdates: [
+        "Wrote Promise utility that excecutes at most N promises at a time."
+      ],
+      minorInternalUpdates: [
+      ]
+    },
     {
       major: 2,
       minor: 0,
@@ -141,6 +157,10 @@ define([
     }
   ];
 
+  var constants = {
+    AMC_COPYRIGHT: "The problems on this page are copyrighted by the Mathematical Association of America's American Mathematics Competitions."
+  };
+
   var modules = {
     aimeUtil: aimeUtil,
     amc10Util: amc10Util,
@@ -174,11 +194,19 @@ define([
     test.testNames.push(test.tests[i].name);
   }
 
+  test.fromName = function(name) {
+    for (t of test.tests) {
+      if (t.name === name) return t;
+    }
+    throw new Error("Test not found");
+  }
+
   return {
     modules: modules,
     test: test,
     VERSIONS: VERSIONS,
     ytqc: modules.question.YTQClassificationSystem,
-    ytqid: modules.question.YTQID
+    ytqid: modules.question.YTQID,
+    constants: constants
   };
 });

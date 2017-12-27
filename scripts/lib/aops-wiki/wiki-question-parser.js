@@ -42,7 +42,7 @@ define(() => {
       if (!done) {
         var $value = $(value);
         var tag = $value.prop("tagName");
-        if (tag === "H2" || tag === "H3") {
+        if (tag === "H1" || tag === "H2" || tag === "H3" || tag === "H4") {
           if (validateHeader(value.firstChild.id)) {
             // We're done if the id is "See_Also".
             done = value.id === "See_Also" || (value.firstChild !== null && value.firstChild.id === "See_Also");

@@ -169,9 +169,7 @@
     <!-- <solution-display> -->
     <template type="text/x-template" id="template-solution-display">
       <div>
-        <div class="card">
-          <div class="card-body"><p class="card-text">Answer: {{ answer }}</p></div>
-        </div>
+        <p class="lead font-weight-bold">Answer: {{ answer }}</p>
         <div v-for="(solution, index) in solutions">
           <h3>Solution {{ index + 1 }}</h3>
           <div v-html="solution"></div>
@@ -188,19 +186,18 @@
           <select class="form-control" v-if="alternates.length !== 0 && isAlternateYear" v-model="alternate">
             <option v-for="(item, index) in alternates" :value="index">{{ item }}</option>
           </select>
-        </div>
-        <div class="input-group mb-1 mr-1">
           <span class="input-group-addon">Question</span>
           <span class="input-group-btn">
-            <button class="btn btn-secondary" :disabled="!canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 75%">&#xE5C4;</i></button>
+            <button class="btn btn-secondary" :disabled="!canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 80%">&#xE5CB;</i></button>
           </span>
           <input type="text" class="form-control" v-model.number="question">
           <span class="input-group-btn">
-            <button class="btn btn-secondary" :disabled="!canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 75%">&#xE5C8;</i></button>
+            <button class="btn btn-secondary" :disabled="!canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 80%">&#xE5CC;</i></button>
           </span>
         </div>
-        <button class="btn btn-success mb-1 mr-1" :disabled="!isValid">Go</button>
-        <button class="btn btn-secondary mb-1 mr-1" @click="refresh" :disabled="!canRefresh">Refresh</button>
+        <div class="btn-group mb-1 mr-1">
+          <button class="btn btn-success" :disabled="!isValid">Go</button>
+        </div>
       </form>
     </template>
     
