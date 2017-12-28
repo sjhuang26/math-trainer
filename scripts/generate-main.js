@@ -8,6 +8,9 @@ requirejs.config({
       init: function(p) {
         window.Popper = p;
       }
+    },
+    "vue": {
+      exports: "Vue"
     }
   },
   paths: {
@@ -24,12 +27,13 @@ requirejs.config({
     "popper-loader": "popper-loader",
     "question": "lib/question/question",
     "question-loader": "lib/question/question-loader",
+    "vue": "https://vuejs.org/js/vue",
     "wiki-loader": "lib/aops-wiki/wiki-loader",
     "wiki-question-parser": "lib/aops-wiki/wiki-question-parser"
   }
 });
 
-requirejs(["jquery", "math-trainer"], ($, app) => {
+requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
   function out(html) {
     $("#output").append(html);
   }
@@ -39,39 +43,116 @@ requirejs(["jquery", "math-trainer"], ($, app) => {
   }
 
   $(() => {
-    // https://stackoverflow.com/questions/8648892/convert-url-parameters-to-a-javascript-object
-    var params = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-    console.log(params);
-    if (params.question !== undefined) {
-      var testObject = app.test.fromName(params.test).util;
-      testObject.Loader.loadQuestion(new app.ytqid(testObject.ClassificationSystem, parseInt(params.year), parseInt(params.alternate), parseInt(params.question)))
-          .then(question => {
-        outTag("h1", testObject.ClassificationSystem.getString(question.questionID));
-        outTag("h2", "Problem");
-        out(question.problem);
-        outTag("p", "Answer: " + question.answer, ' class="lead"');
-        for (var i = 0; i < question.solutions.length; i++) {
-          outTag("h2", "Solution " + (i + 1));
-          out(question.solutions[i]);
+    Vue.component("app-output", {
+      data() {
+        return {
+          testTitle: "",
+          questions: [],
+          isLoading: true,
+          isError: false
+        };
+      },
+      mounted() {
+        // https://stackoverflow.com/questions/8648892/convert-url-parameters-to-a-javascript-object
+        var params = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+        console.log("Parameters", params);
+
+        if (params.test !== undefined) {
+          var testObject = app.test.fromName(params.test).util;
+          var testID = new app.ytqid(testObject.ClassificationSystem, parseInt(params.year), parseInt(params.alternate), 1);
+          testObject.Loader.loadTestWithSolutions(testID)
+              .then(questions => {
+            this.testTitle = testObject.ClassificationSystem.getTestString(testID);
+            this.questions = questions;
+            this.endLoad();
+          });
+        } else {
+          this.endLoad("Parameters incorrect");
         }
-      });
-    } else {
-      var testObject = app.test.fromName(params.test).util;
-      var testID = new app.ytqid(testObject.ClassificationSystem, parseInt(params.year), parseInt(params.alternate), 1);
-      testObject.Loader.loadTestWithSolutions(testID)
-          .then(questions => {
-        outTag("h1", testObject.ClassificationSystem.getTestString(testID));
-        for (var question of questions) {
-          outTag("h2", "Question " + question.questionID.question);
-          outTag("h3", "Problem");
-          out(question.problem);
-          outTag("p", "Answer: " + question.answer, ' class="lead font-weight-bold"');
-          for (var i = 0; i < question.solutions.length; i++) {
-            outTag("h4", "Solution " + (i + 1));
-            out(question.solutions[i]);
+      },
+      methods: {
+        endLoad(error) {
+          if (error === undefined) {
+            this.isLoading = false;
+            this.isError = false;
+          } else {
+            this.isLoading = false;
+            this.isError = true;
           }
+        },
+      },
+      template: "#template-app-output"
+    });
+
+    Vue.component("loader", {
+      props: {
+        isLoading: {
+          type: Boolean,
+          required: true
+        },
+        isError: {
+          type: Boolean,
+          required: true
         }
-      });
-    }
+      },
+      methods: {
+        tryAgain: function() {
+          this.$emit("try-again");
+        }
+      },
+      template: "#template-loader"
+    });
+
+    Vue.component("problem-row", {
+      props: {
+        number: {
+          type: [String, Number],
+          required: true
+        },
+        content: {
+          type: String,
+          required: true
+        }
+      },
+      template: "#template-problem-row"
+    });
+
+    Vue.component("solution-row", {
+      props: {
+        number: {
+          type: [String, Number],
+          required: true
+        },
+        solution: {
+          type: String,
+          required: true
+        },
+        answer: {
+          type: [String, Number],
+          required: true
+        }
+      },
+      template: "#template-solution-row"
+    });
+
+    Vue.component("alternate-solution-row", {
+      props: {
+        number: {
+          type: [String, Number],
+          required: true
+        },
+        solutions: {
+          type: Array,
+          required: true
+        }
+      },
+      template: "#template-alternate-solution-row"
+    });
+
+    new Vue({
+      el: '#app-output',
+      data: {
+      }
+    });
   });
 });

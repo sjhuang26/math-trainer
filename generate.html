@@ -2,7 +2,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+    <title>Math Trainer</title>
+
     <!-- Favicon -->
     <link rel="shortcut icon" href="images/favicon/favicon.ico">
 
@@ -15,6 +16,92 @@
     <script data-main="scripts/generate-main" src="scripts/require.js"></script>
   </head>
   <body>
-    <div id="output"></div>
+    <!-- <app-output> -->
+    <template type="text/x-template" id="template-app-output">
+      <div class="container-fluid">
+        <loader :is-loading="isLoading" :is-error="isError">
+          <div class="row">
+            <h1>{{ testTitle }}</h1>
+          </div>
+          <problem-row v-for="(question, index) in questions"
+              :number="question.questionID.question"
+              :content="question.problem"
+              :key="index+'a'"></problem-row>
+          <div class="row">
+            <h2>Solutions</h2>
+          </div>
+          <solution-row v-for="(question, index) in questions"
+              :answer="question.answer"
+              :number="index + 1"
+              :solution="question.solutions[0]"
+              :key="index+'b'"></solution-row>
+          <div class="row">
+            <h2>Alternate solutions</h2>
+          </div>
+          <alternate-solution-row v-for="(question, index) in questions"
+              v-if="question.solutions.length > 1"
+              :number="index + 1"
+              :solutions="question.solutions.slice(1)"
+              :key="index+'e'"></alternate-solution-row>
+        </loader>
+      </div>
+    </template>
+    
+    <!-- <loader> -->
+    <template type="text/x-template" id="template-loader">
+      <div>
+        <div v-if="isLoading">
+          <img src="images/loading.svg" class="m-auto d-block" />
+          <p class="text-center lead font-weight-bold" style="margin-top: -3rem">Loading...</p>
+        </div>
+        <div v-else-if="isError">
+          <div class="card">
+            <div class="card-header">Error</div>
+            <div class="card-body">
+              <h4 class="card-title">{{ shortErrorDescription }}</h4>
+              <p class="card-text">{{ longErrorDescription }}</p>
+              <button class="btn btn-primary" @click="tryAgain">Try again</button>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <slot></slot>
+        </div>
+      </div>
+    </template>
+
+    <!-- <problem-row> -->
+    <template type="text/x-template" id="template-problem-row">
+      <div class="row">
+        <div class="col-1"><p class="font-weight-bold">#{{ number }}</p></div>
+        <div class="col-11" v-html="content"></div>
+      </div>
+    </template>
+
+    <!-- <solution-row> -->
+    <template type="text/x-template" id="template-solution-row">
+      <div class="row">
+        <div class="col-1"><p class="font-weight-bold">#{{ number }}</p></div>
+        <div class="col-11">
+          <p class="font-weight-bold">{{ answer }}</p>
+          <div v-html="solution"></div>
+        </div>
+      </div>
+    </template>
+
+    <!-- <alternate-solution-row> -->
+    <template type="text/x-template" id="template-alternate-solution-row">
+      <div class="row">
+        <div class="col-1"><p class="font-weight-bold">#{{ number }}</p></div>
+        <div class="col-11">
+          <div v-for="(solution, index) in solutions" :key="index+'d'">
+            <p v-if="index !== 0" class="font-weight-bold">Another solution</p>
+            <div v-html="solution"></div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <app-output id="app-output"></app-output>
   </body>
 </html>
