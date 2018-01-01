@@ -55,7 +55,7 @@ define(["classification-system"], (classificationSystem) => {
     }
 
     static isQuestionValid(question) {
-      return question > 0 && question <= this.NUM_QUESTIONS
+      return question > 0 && question <= this.NUM_QUESTIONS;
     }
 
     static isAlternateYear(year) {
@@ -79,7 +79,7 @@ define(["classification-system"], (classificationSystem) => {
 
     static isValid(series) {
       return this.isYearValid(series.year)
-        && (series.test === 0 || this.isAlternateYear(series.year))
+        && (series.alternate === 0 || this.isAlternateYear(series.year))
         && this.isQuestionValid(series.question);
     }
   }
