@@ -1,0 +1,5 @@
+@media print {
+  .content-embed * {
+    color: black;
+  }
+}

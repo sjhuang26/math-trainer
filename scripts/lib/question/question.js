@@ -59,7 +59,7 @@ define(["classification-system"], (classificationSystem) => {
     }
 
     static isAlternateYear(year) {
-      return year >= this.FIRST_ALTERNATE_YEAR;
+      return this.FIRST_ALTERNATE_YEAR <= year && this.isYearValid(year);
     }
     
     static get levels() {

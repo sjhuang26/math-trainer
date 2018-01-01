@@ -13,6 +13,9 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" crossorigin="anonymous">
 
+    <!-- App CSS -->
+    <link rel="stylesheet" href="css/generate-main.css" />
+
     <script data-main="scripts/generate-main" src="scripts/require.js"></script>
   </head>
   <body>
@@ -49,7 +52,12 @@
         </loader>
       </div>
     </template>
-    
+
+    <!-- <content-embed> -->
+    <template type="text/x-template" id="template-content-embed">
+      <div class="content-embed" v-html="content"></div>
+    </template>
+
     <!-- <loader> -->
     <template type="text/x-template" id="template-loader">
       <div>
@@ -77,7 +85,8 @@
     <template type="text/x-template" id="template-problem-row">
       <div class="row">
         <div class="col-1"><p class="font-weight-bold">#{{ number }}</p></div>
-        <div class="col-11" v-html="content"></div>
+        <content-embed class="col-11" :content="content">
+        </content-embed>
       </div>
     </template>
 
@@ -87,7 +96,8 @@
         <div class="col-1"><p class="font-weight-bold">#{{ number }}</p></div>
         <div class="col-11">
           <p class="font-weight-bold">{{ answer }}</p>
-          <div v-html="solution"></div>
+          <content-embed :content="solution">
+          </content-embed>
         </div>
       </div>
     </template>
@@ -99,7 +109,8 @@
         <div class="col-11">
           <div v-for="(solution, index) in solutions" :key="index+'d'">
             <p v-if="index !== 0" class="font-weight-bold">Another solution</p>
-            <div v-html="solution"></div>
+            <content-embed :content="solution">
+            </content-embed>
           </div>
         </div>
       </div>

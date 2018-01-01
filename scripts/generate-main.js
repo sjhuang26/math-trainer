@@ -87,6 +87,16 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
       template: "#template-app-output"
     });
 
+    Vue.component("content-embed", {
+      props: {
+        content: {
+          type: String,
+          required: true
+        }
+      },
+      template: "#template-content-embed"
+    });
+
     Vue.component("loader", {
       props: {
         isLoading: {

@@ -64,8 +64,13 @@ define(() => {
             // ignore this header and whatever's under it.
             ignoreContent = true;
           }
+        } else if (value.className === "wikitable") {
+          // This is the "see also" table -- stop!
+          done = true;
         } else if (!ignoreContent && value.id !== "toc") {
-          // Append the current element into the current block if content isn't being ignored and/or the id isn't #toc.
+          // Append the current element into the current block if...
+          // content isn't being ignored
+          // the id isn't #toc
           block.append(value);
           contentInBlock = true;
         }
