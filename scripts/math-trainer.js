@@ -20,6 +20,26 @@ define([
   var VERSIONS = [
     {
       major: 2,
+      minor: 2,
+      patch: 0,
+      majorAppUpdates: [
+        "Added print test feature to user interface.",
+        "Improved the formatting of the test printout."
+      ],
+      minorAppUpdates: [
+        "Added title to app.",
+        "Got rid of individual question printing because it seemed unnecessary."
+      ],
+      majorInternalUpdates: [
+        "Generate.html now uses Vue."
+      ],
+      minorInternalUpdates: [
+        "Added abstract static TEST_NAME field to YTQClassificationSystem.",
+        "Cleaned up a couple unused props and components."
+      ]
+    },
+    {
+      major: 2,
       minor: 1,
       patch: 0,
       majorAppUpdates: [
