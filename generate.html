@@ -21,6 +21,9 @@
       <div class="container-fluid">
         <loader :is-loading="isLoading" :is-error="isError">
           <div class="row">
+            <button v-on:click="printTest" type="button" class="btn btn-primary btn-lg btn-block d-print-none ml-1 mr-1 mt-1 mb-1">Print test</button>
+          </div>
+          <div class="row">
             <h1>{{ testTitle }}</h1>
           </div>
           <problem-row v-for="(question, index) in questions"

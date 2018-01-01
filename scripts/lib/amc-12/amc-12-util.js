@@ -16,6 +16,10 @@ define(["question", "question-loader"], (question, QuestionLoader) => {
       return ["A", "B"];
     }
 
+    static get TEST_NAME() {
+      return "AMC 12";
+    }
+
     static getString(id) {
       return this.getTestString(id) + " Question " + id.question;
     }

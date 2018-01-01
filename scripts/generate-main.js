@@ -80,6 +80,9 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
             this.isError = true;
           }
         },
+        printTest() {
+          window.print();
+        }
       },
       template: "#template-app-output"
     });

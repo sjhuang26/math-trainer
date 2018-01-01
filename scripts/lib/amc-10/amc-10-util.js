@@ -15,6 +15,10 @@ define(["question", "question-loader"], (question, QuestionLoader) => {
     static get ALTERNATE_NAMES() {
       return ["A", "B"];
     }
+    
+    static get TEST_NAME() {
+      return "AMC 10";
+    }
 
     static getString(id) {
       return this.getTestString(id) + " Question " + id.question;

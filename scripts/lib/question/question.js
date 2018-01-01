@@ -31,6 +31,13 @@ define(["classification-system"], (classificationSystem) => {
     /**
      * @abstract
      */
+    static get TEST_NAME() {
+      throw "abstract";
+    }
+
+    /**
+     * @abstract
+     */
     static getString(ytqid) {
       throw "abstract";
     }

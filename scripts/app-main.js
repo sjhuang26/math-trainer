@@ -42,7 +42,7 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
           currentPage: 0,
           tests: app.test.testNames,
           test: 0,
-          pages: ["Browse", "About"],
+          pages: ["Browse", "About", "Print"],
           versions: app.VERSIONS
         };
       },
@@ -167,7 +167,6 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
           isLoading: false,
           displayQuestion: false,
           answer: "",
-          canRefresh: false,
           wikiViewLink: "",
           wikiEditLink: "",
           shortErrorDescription: "",
@@ -182,7 +181,6 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
           this.questionID = questionID;
           
           this.isLoading = true;
-          this.canRefresh = false;
           this.displayQuestion = true;
           this.isError = false;
           var qPage = this.testObject.util.Loader.idToQuestionPage(questionID);
@@ -193,7 +191,6 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
             this.questionPageName = qPage;
             this.solutions = question.solutions;
             this.isLoading = false;
-            this.canRefresh = true;
             this.answer = question.answer;
           }).catch(reason => {
             this.isError = true;
@@ -229,9 +226,20 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
       },
       template: "#template-page-browse"
     });
-    
-    Vue.component("page-log", {
-      template: "#template-page-log"
+
+    Vue.component("page-print", {
+      props: {
+        testObject: {
+          type: Object,
+          required: true
+        }
+      },
+      methods: {
+        printTest(questionID) {
+          window.open("generate.html?test=" + questionID.system.TEST_NAME + "&year=" + questionID.year + "&alternate=" + questionID.alternate, "_blank");
+        }
+      },
+      template: "#template-page-print"
     });
     
     Vue.component("problem-display", {
@@ -306,10 +314,6 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
           type: Object,
           required: true
         },
-        canRefresh: {
-          type: Boolean,
-          required: true
-        },
         defaultYear: {
           type: Number,
           required: false,
@@ -324,6 +328,11 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
           type: Number,
           required: false,
           default: 0
+        },
+        showQuestion: {
+          type: Boolean,
+          required: false,
+          default: true
         }
       },
       data: function() {

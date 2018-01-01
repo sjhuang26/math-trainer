@@ -28,6 +28,7 @@
           <app-switcher :items="pages" :active-item="currentPage">
             <page-browse slot="Browse" :test-object="testObject"></page-browse>
             <page-about slot="About" :versions="versions"></page-about>
+            <page-print slot="Print" :test-object="testObject"></page-print>
           </app-switcher>
         </div>
       </div>
@@ -124,11 +125,10 @@
       <div>
         <div class="row pt-1 sticky-top bg-light">
           <div class="col">
-            <ytq-classification-selector :test-object="testObject" :can-refresh="canRefresh"
+            <ytq-classification-selector :test-object="testObject"
             :default-year="defaultYear" :default-alternate="defaultAlternate"
             :default-question="defaultQuestion"
-            @navigate="loadQuestion"
-            :question-i-d="questionID"></ytq-classification-selector>
+            @navigate="loadQuestion"></ytq-classification-selector>
           </div>
         </div>
         <div class="row pt-1">
@@ -144,6 +144,20 @@
                 <solution-display :solutions="solutions" :answer="answer"></solution-display>
               </solution-toggle>
             </loader>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- <page-print> -->
+    <template type="text/x-template" id="template-page-print">
+      <div>
+        <div class="row">
+          <div class="col">
+            <h1 class="display-3">Print a test</h1>
+            <ytq-classification-selector :test-object="testObject"
+            :show-question="false"
+            @navigate="printTest"></ytq-classification-selector>
           </div>
         </div>
       </div>
@@ -187,14 +201,16 @@
           <select class="form-control" v-if="alternates.length !== 0 && isAlternateYear" v-model="alternate">
             <option v-for="(item, index) in alternates" :value="index">{{ item }}</option>
           </select>
-          <span class="input-group-addon">Question</span>
-          <span class="input-group-btn">
-            <button class="btn btn-secondary" :disabled="!canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 80%">&#xE5CB;</i></button>
-          </span>
-          <input type="text" class="form-control" v-model.number="question">
-          <span class="input-group-btn">
-            <button class="btn btn-secondary" :disabled="!canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 80%">&#xE5CC;</i></button>
-          </span>
+          <template v-if="showQuestion">
+            <span class="input-group-addon">Question</span>
+            <span class="input-group-btn">
+              <button class="btn btn-secondary" :disabled="!canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 80%">&#xE5CB;</i></button>
+            </span>
+            <input type="text" class="form-control" v-model.number="question">
+            <span class="input-group-btn">
+              <button class="btn btn-secondary" :disabled="!canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 80%">&#xE5CC;</i></button>
+            </span>
+          </template>
         </div>
         <div class="btn-group mb-1 mr-1">
           <button class="btn btn-success" :disabled="!isValid">Go</button>
