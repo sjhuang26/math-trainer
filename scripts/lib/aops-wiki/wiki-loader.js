@@ -39,12 +39,22 @@ define(["jquery"], ($) => {
           // automatically apply redirects in Wiki pages (common with AMC questions)
           redirects: null
         },
+        error: (requestObject) => {
+          reject({
+            type: errorType.NETWORK_ERROR,
+            requestObject: requestObject
+          });
+        },
         success: (response) => {
           if (response.error) {
             if (response.error.code === "missingtitle") {
-              reject(new LoadError(LoadError.errorType.MISSING_PAGE, {page: page}));
+              reject({
+                type: errorType.MISSING_PAGE,
+                page: page});
             } else {
-              reject(new LoadError(LoadError.errorType.OTHER, response));
+              reject({
+                type: errorType.OTHER,
+                response: response});
             }
           } else {
             var html = $.parseHTML(response["parse"]["text"]["*"]);
@@ -84,22 +94,16 @@ define(["jquery"], ($) => {
     });
   }
 
-  class LoadError {
-    constructor(errorType, info) {
-      this.errorType = errorType;
-      this.info = info;
-    }
-  }
-
-  LoadError.errorType = {
+  var errorType = {
     MISSING_PAGE: "MISSING_PAGE",
-    OTHER: "OTHER"
-  }
+    OTHER: "OTHER",
+    NETWORK_ERROR: "NETWORK_ERROR"
+  };
 
   return {
+    errorType: errorType,
     getEditPageURI: getEditPageURI,
     getPageURI: getPageURI,
-    load: load,
-    LoadError: LoadError
+    load: load
   };
 });

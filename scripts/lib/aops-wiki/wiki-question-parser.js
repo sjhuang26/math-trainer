@@ -1,6 +1,6 @@
 define(() => {
-  var parseError = {
-    NO_BLOCKS: "wikiQuestionParser.parseError.NO_BLOCKS"
+  var parseErrorType = {
+    NO_BLOCKS: "NO_BLOCKS"
   };
 
   function arrayToString(arr) {
@@ -77,7 +77,7 @@ define(() => {
     
     if (blocks.length === 0) {
       // No blocks ... ????
-      throw new Error(parseError.NO_BLOCKS);
+      throw {type: parseErrorType.NO_BLOCKS};
     }
     
     return {
@@ -92,7 +92,7 @@ define(() => {
 
   return {
     parseAnswerPage: parseAnswerPage,
-    parseError: parseError,
+    parseErrorType: parseErrorType,
     parseQuestionPage: parseQuestionPage
   };
 });

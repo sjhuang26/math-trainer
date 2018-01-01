@@ -177,7 +177,7 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
         };
       },
       methods: {
-        loadQuestion: function(questionID) {
+        loadQuestion(questionID) {
           this.questionID = questionID;
           
           this.isLoading = true;
@@ -195,33 +195,34 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
           }).catch(reason => {
             this.isError = true;
             this.isLoading = false;
-            if (reason instanceof Error) {
-              if (reason.message instanceof app.modules.wikiLoader.LoadError) {
-                if (reason.message === app.modules.wikiLoader.LoadError.errorType.MISSING_TITLE) {
-                  this.shortErrorDescription = "Page missing";
-                  this.longErrorDescription = "The page that Math Trainer requested doesn't exist on the Art of Problem solving wiki.";
-                  if (year === new Date().getFullYear()) {
-                    this.longErrorDescription += " Maybe this year's test hasn't been posted on the wiki yet."
-                  }
+            switch (reason.type) {
+              case app.modules.wikiLoader.errorType.MISSING_PAGE:
+                if (questionID.year == new Date().getFullYear()) {
+                  this.setError("Test not on wiki", "This year's test is not on the wiki yet.");
                 } else {
-                  this.shortErrorDescription = "Unknown wiki error";
-                  this.longErrorDescription = "An unknown wiki error occured while loading your question.";
+                  this.setError("Missing page", "The wiki page with the question doesn't exist.");
                 }
-              } else if (reason.message === app.modules.wikiQuestionParser.parseError.NO_BLOCKS) {
-                this.shortErrorDescription = "Invalid wiki page";
-                this.longErrorDescription = "The wiki page with the question exists, but its contents aren't formatted right and Math Trainer can't figure out what the question is.";
-              } else {
-                this.shortErrorDescription = "Unknown error";
-                this.longErrorDescription = "An unknown error occured while loading your question.";
-              }
-            } else {
-              this.shortErrorDescription = "Unknown error";
-              this.longErrorDescription = "An unknown error occured while loading your question.";
+                break;
+              case app.modules.wikiLoader.errorType.NETWORK_ERROR:
+                this.setError("Network error", "Your computer could not connect to the Internet.");
+                break;
+              case app.modules.wikiLoader.errorType.OTHER:
+                this.setError("Question cannot be loaded", "The question could not be loaded from the wiki.");
+                break;
+              case app.modules.wikiQuestionParser.parseErrorType.NO_BLOCKS:
+                this.setError("The wiki page's contents cannot be read by the app.");
+                break;
+              default:
+                this.setError("Unknown error", "An unknown error occurred.");
             }
           });
         },
-        tryAgain: function() {
+        tryAgain() {
           this.loadQuestion(this.questionID);
+        },
+        setError(shortErrorDescription, longErrorDescription) {
+          this.shortErrorDescription = shortErrorDescription;
+          this.longErrorDescription = longErrorDescription;
         }
       },
       template: "#template-page-browse"
