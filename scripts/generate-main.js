@@ -67,7 +67,6 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
 
           // https://stackoverflow.com/questions/8648892/convert-url-parameters-to-a-javascript-object
           var params = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-          console.log("loading with parameters", params);
 
           var test = app.test.fromName(params.test);
           var testObject = (test === undefined) ? undefined : test.util;
@@ -97,14 +96,14 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
             this.endLoad("Inputs invalid", "Test is invalid.");
           } else {
             var testID = new app.ytqid(testObject.ClassificationSystem, year, alternate, 1);
-            testObject.Loader.loadTest(testID, true).then(questions => {
+            testObject.Loader.loadTest(testID, this.loadSolutions || this.loadAlternateSolutions).then(questions => {
               this.testTitle = testObject.ClassificationSystem.getTestString(testID);
               this.questions = questions;
               this.endLoad();
-            }).catch(reason => {
+            })/*.catch(reason => {
               var errorArray = app.getLoadErrorMessage(reason, testID);
               this.endLoad(errorArray[0], errorArray[1]);
-            });
+            });*/
           }
         },
         endLoad(shortErrorDescription, longErrorDescription) {

@@ -215,6 +215,11 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
     });
 
     Vue.component("page-print", {
+      data: function() {
+        return {
+          onlyShow: 0
+        };
+      },
       props: {
         testObject: {
           type: Object,
@@ -223,7 +228,16 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
       },
       methods: {
         printTest(questionID) {
-          window.open("generate.html?test=" + questionID.system.TEST_NAME + "&year=" + questionID.year + "&alternate=" + questionID.alternate, "_blank");
+          window.open("generate.html?test=" + questionID.system.TEST_NAME + "&year=" + questionID.year + "&alternate=" + questionID.alternate + "&onlyLoad=" + this.onlyShowParameter, "_blank");
+        }
+      },
+      computed: {
+        onlyShowParameter() {
+          switch (this.onlyShow) {
+            case 0: return "+problems;";
+            case 1: return "+problems;+solutions;+alternateSolutions;";
+            case 2: return "+solutions;+alternateSolutions;";
+          }
         }
       },
       template: "#template-page-print"

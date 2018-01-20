@@ -14,6 +14,13 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
     throw new Error("abstract");
   }
 
+  /**
+   * @abstract
+   */
+  static idToTestPage(questionID) {
+    throw new Error("abstract");
+  }
+
   static loadQuestion(questionID) {
     return Promise.all([
       this.loadQuestionPage(questionID),
@@ -46,8 +53,14 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
   }
 
   static loadTest(questionID, withSolutions) {
-    // TODO do this
+    if (withSolutions) {
+      return this.loadTestWithSolutions(questionID);
+    } else {
+      return this.loadTestWithoutSolutions(questionID);
+    }
+  }
 
+  static loadTestWithSolutions(questionID) {
     // Create the scheduler.
     var scheduler = new promiseUtil.PromiseThreadScheduler(3, {
       questionPage: this.undefinedArray(questionID.system.NUM_QUESTIONS)
@@ -58,7 +71,7 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
       result.answerPage = r;
     }));
     
-    // Push question page tasks for each question
+    // Push question page tasks for each question.
     for (var i = 1; i <= questionID.system.NUM_QUESTIONS; i++) {
       // Push the result of a function that takes in the question number and
       // returns the task that loads that question (and the task is a function
@@ -90,6 +103,20 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
             questionPage.content.solutions));
       }
       return questions;
+    });
+  }
+
+  static loadTestWithoutSolutions(questionID) {
+    return wikiLoader.load(this.idToTestPage(questionID))
+    .then(wikiQuestionParser.parseTestPage)
+    .then(questions => {
+      var result = [];
+      for (var i = 0; i < questionID.system.NUM_QUESTIONS; i++) {
+        result.push(new question.Question(new question.YTQID(
+        questionID.system, questionID.year,
+        questionID.alternate, i + 1), questions[i].problem, "undefined", "undefined"));
+      }
+      return result;
     });
   }
 });

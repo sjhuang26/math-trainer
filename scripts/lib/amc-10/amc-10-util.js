@@ -44,6 +44,12 @@ define(["question", "question-loader"], (question, QuestionLoader) => {
           id.question :
           id.year + " AMC 10 Problems/Problem " + id.question;
     }
+
+    static idToTestPage(id) {
+      return id.isAlternateYear ?
+          id.year + " AMC 10" + id.alternateName + " Problems" :
+          id.year + " AMC 10 Problems";
+    }
   }
 
   return {

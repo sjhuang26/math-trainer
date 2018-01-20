@@ -18,10 +18,12 @@ define(() => {
   }
 
   function parseTestPage(html) {
-    // TODO do this
+    return parseBlocks(html).map(block => ({
+      problem: arrayToString(block)
+    }));
   }
 
-  function parseQuestionPage(html) {
+  function parseBlocks(html) {
     // Data is formatted as <h2 /><problem><h2 /><solution 1> [...] <h2 id="See_Also" /><stuff we don't want>.
     // So, the data is chunked into blocks delimited by h2s.
     
@@ -69,12 +71,13 @@ define(() => {
             ignoreContent = true;
           }
         } else if (value.className === "wikitable") {
-          // This is the "see also" table -- stop!
-          done = true;
-        } else if (!ignoreContent && value.id !== "toc") {
+          // This is the "see also" table -- stop if not ignoring content!
+          if (!ignoreContent) done = true;
+        } else if (!ignoreContent && value.id !== "toc" && !(tag === "P" && value.textContent.startsWith("Solution"))) {
           // Append the current element into the current block if...
           // content isn't being ignored
           // the id isn't #toc
+          // it's not a "Solution" link inside a P 
           block.append(value);
           contentInBlock = true;
         }
@@ -88,7 +91,11 @@ define(() => {
       // No blocks ... ????
       throw {type: parseErrorType.NO_BLOCKS};
     }
-    
+    return blocks;
+  }
+
+  function parseQuestionPage(html) {
+    var blocks = parseBlocks(html);
     return {
       problem: arrayToString(blocks[0]),
       solutions: blocks.slice(1).map(a => arrayToString(a))
@@ -102,6 +109,8 @@ define(() => {
   return {
     parseAnswerPage: parseAnswerPage,
     parseErrorType: parseErrorType,
-    parseQuestionPage: parseQuestionPage
+    parseQuestionPage: parseQuestionPage,
+    parseBlocks: parseBlocks,
+    parseTestPage: parseTestPage
   };
 });

@@ -54,6 +54,16 @@ define(["question", "question-loader"], (question, QuestionLoader) => {
         return id.year + " AIME Problems/Problem " + id.question;
       }
     }
+
+    static idToTestPage(id) {
+      if (id.isAlternateYear) {
+        // years with alternate tests (an I and an II)
+        return id.year + " AIME " + id.alternateName + " Problems";
+      } else {
+        // years without them
+        return id.year + " AIME Problems";
+      }
+    }
   }
 
   return {
