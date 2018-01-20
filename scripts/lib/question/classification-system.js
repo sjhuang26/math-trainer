@@ -4,14 +4,14 @@ define(() => {
      * @abstract
      */
     get levels() {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     /**
      * @abstract
      */
     isValid(series) {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     constructor() {

@@ -4,14 +4,14 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
    * @abstract
    */
   static idToAnswerPage(questionID) {
-    throw "abstract";
+    throw new Error("abstract");
   }
 
   /**
    * @abstract
    */
   static idToQuestionPage(questionID) {
-    throw "abstract";
+    throw new Error("abstract");
   }
 
   static loadQuestion(questionID) {

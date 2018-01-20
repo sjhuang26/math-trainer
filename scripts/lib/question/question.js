@@ -4,49 +4,49 @@ define(["classification-system"], (classificationSystem) => {
      * @abstract
      */
     static get FIRST_YEAR() {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     /**
      * @abstract
      */
     static get FIRST_ALTERNATE_YEAR() {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     /**
      * @abstract
      */
     static get NUM_QUESTIONS() {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     /**
      * @abstract
      */
     static get ALTERNATE_NAMES() {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     /**
      * @abstract
      */
     static get TEST_NAME() {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     /**
      * @abstract
      */
     static getString(ytqid) {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     /**
      * @abstract
      */
     static getTestString(ytqid) {
-      throw "abstract";
+      throw new Error("abstract");
     }
 
     static isYearValid(year) {
