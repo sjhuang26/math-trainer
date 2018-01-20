@@ -26,7 +26,9 @@ define([
       minorAppUpdates: [
         "Fixed a couple bugs involving printing and test validation.",
         "Improved error handling."
-      ]
+      ],
+      majorInternalUpdates: [],
+      minorInternalUpdates: []
     },
     {
       major: 2,
