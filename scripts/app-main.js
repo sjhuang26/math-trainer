@@ -190,39 +190,25 @@ requirejs(["jquery", "vue", "math-trainer", "bootstrap"], function($, Vue, app) 
             this.problem = question.problem;
             this.questionPageName = qPage;
             this.solutions = question.solutions;
-            this.isLoading = false;
             this.answer = question.answer;
+            this.endLoad();
           }).catch(reason => {
-            this.isError = true;
-            this.isLoading = false;
-            switch (reason.type) {
-              case app.modules.wikiLoader.errorType.MISSING_PAGE:
-                if (questionID.year == new Date().getFullYear()) {
-                  this.setError("Test not on wiki", "This year's test is not on the wiki yet.");
-                } else {
-                  this.setError("Missing page", "The wiki page with the question doesn't exist.");
-                }
-                break;
-              case app.modules.wikiLoader.errorType.NETWORK_ERROR:
-                this.setError("Network error", "Your computer could not connect to the Internet.");
-                break;
-              case app.modules.wikiLoader.errorType.OTHER:
-                this.setError("Question cannot be loaded", "The question could not be loaded from the wiki.");
-                break;
-              case app.modules.wikiQuestionParser.parseErrorType.NO_BLOCKS:
-                this.setError("The wiki page's contents cannot be read by the app.");
-                break;
-              default:
-                this.setError("Unknown error", "An unknown error occurred.");
-            }
+            var errorArray = app.getLoadErrorMessage(reason, questionID);
+            this.endLoad(errorArray[0], errorArray[1]);
           });
         },
         tryAgain() {
           this.loadQuestion(this.questionID);
         },
-        setError(shortErrorDescription, longErrorDescription) {
-          this.shortErrorDescription = shortErrorDescription;
-          this.longErrorDescription = longErrorDescription;
+        endLoad(shortErrorDescription, longErrorDescription) {
+          if (shortErrorDescription === undefined) {
+            this.isError = false;
+          } else {
+            this.isError = true;
+            this.shortErrorDescription = shortErrorDescription;
+            this.longErrorDescription = longErrorDescription;
+          }
+          this.isLoading = false;
         }
       },
       template: "#template-page-browse"

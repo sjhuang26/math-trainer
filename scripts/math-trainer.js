@@ -230,8 +230,29 @@ define([
     for (t of test.tests) {
       if (t.name === name) return t;
     }
-    throw new Error("Test not found");
+    return undefined;
   }
+
+  var getLoadErrorMessage = function(reason, questionID) {
+    switch (reason.type) {
+      case modules.wikiLoader.errorType.MISSING_PAGE:
+        if (questionID.year == new Date().getFullYear()) {
+          return ["Test not on wiki", "This year's test is not on the wiki yet."];
+        } else {
+          return ["Missing page", "The wiki page with the question doesn't exist."];
+        }
+        break;
+      case modules.wikiLoader.errorType.NETWORK_ERROR:
+        return ["Network error", "Your computer could not connect to the Internet."];
+      case modules.wikiLoader.errorType.OTHER:
+        return ["Question cannot be loaded", "The question could not be loaded from the wiki."];
+      case modules.wikiQuestionParser.parseErrorType.NO_BLOCKS:
+        return ["The wiki page's contents cannot be read by the app."];
+        break;
+      default:
+        return ["Unknown error", "An unknown error occurred."];
+    }
+  };
 
   return {
     modules: modules,
@@ -239,6 +260,7 @@ define([
     VERSIONS: VERSIONS,
     ytqc: modules.question.YTQClassificationSystem,
     ytqid: modules.question.YTQID,
-    constants: constants
+    constants: constants,
+    getLoadErrorMessage: getLoadErrorMessage
   };
 });

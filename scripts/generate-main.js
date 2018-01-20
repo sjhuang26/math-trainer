@@ -49,36 +49,59 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
           testTitle: "",
           questions: [],
           isLoading: true,
-          isError: false
+          isError: false,
+          shortErrorDescription: "",
+          longErrorDescription: ""
         };
       },
       mounted() {
-        // https://stackoverflow.com/questions/8648892/convert-url-parameters-to-a-javascript-object
-        var params = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-        console.log("Parameters", params);
-
-        if (params.test !== undefined) {
-          var testObject = app.test.fromName(params.test).util;
-          var testID = new app.ytqid(testObject.ClassificationSystem, parseInt(params.year), parseInt(params.alternate), 1);
-          testObject.Loader.loadTestWithSolutions(testID)
-              .then(questions => {
-            this.testTitle = testObject.ClassificationSystem.getTestString(testID);
-            this.questions = questions;
-            this.endLoad();
-          });
-        } else {
-          this.endLoad("Parameters incorrect");
-        }
+        this.load();
       },
       methods: {
-        endLoad(error) {
-          if (error === undefined) {
-            this.isLoading = false;
+        load() {
+          this.isLoading = true;
+          this.isError = false;
+
+          // https://stackoverflow.com/questions/8648892/convert-url-parameters-to-a-javascript-object
+          var params = JSON.parse('{"' + decodeURI(location.search.substring(1)).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
+          console.log("loading with parameters", params);
+
+          var test = app.test.fromName(params.test);
+          var testObject = (test === undefined) ? undefined : test.util;
+          var year = parseInt(params.year);
+          var alternate = parseInt(params.alternate);
+
+          if (test === undefined) {
+            this.endLoad("Test invalid", "This test does not exist.");
+          } else if (year === undefined || alternate === undefined) {
+            this.endLoad("Inputs invalid", "Must specify test, year, and alternate.");
+          } else if (!testObject.ClassificationSystem.isValid({
+            year: year,
+            alternate: alternate,
+            question: 1
+          })) {
+            this.endLoad("Inputs invalid", "Test is invalid.");
+          } else {
+            var testID = new app.ytqid(testObject.ClassificationSystem, year, alternate, 1);
+            testObject.Loader.loadTestWithSolutions(testID).then(questions => {
+              this.testTitle = testObject.ClassificationSystem.getTestString(testID);
+              this.questions = questions;
+              this.endLoad();
+            }).catch(reason => {
+              var errorArray = app.getLoadErrorMessage(reason, testID);
+              this.endLoad(errorArray[0], errorArray[1]);
+            });
+          }
+        },
+        endLoad(shortErrorDescription, longErrorDescription) {
+          if (shortErrorDescription === undefined) {
             this.isError = false;
           } else {
-            this.isLoading = false;
             this.isError = true;
+            this.shortErrorDescription = shortErrorDescription;
+            this.longErrorDescription = longErrorDescription;
           }
+          this.isLoading = false;
         },
         printTest() {
           window.print();
@@ -105,6 +128,14 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
         },
         isError: {
           type: Boolean,
+          required: true
+        },
+        shortErrorDescription: {
+          type: String,
+          required: true
+        },
+        longErrorDescription: {
+          type: String,
           required: true
         }
       },
