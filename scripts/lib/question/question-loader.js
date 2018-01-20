@@ -45,7 +45,9 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
     return arr;
   }
 
-  static loadTestWithSolutions(questionID) {
+  static loadTest(questionID, withSolutions) {
+    // TODO do this
+
     // Create the scheduler.
     var scheduler = new promiseUtil.PromiseThreadScheduler(3, {
       questionPage: this.undefinedArray(questionID.system.NUM_QUESTIONS)

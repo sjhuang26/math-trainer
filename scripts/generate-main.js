@@ -51,7 +51,10 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
           isLoading: true,
           isError: false,
           shortErrorDescription: "",
-          longErrorDescription: ""
+          longErrorDescription: "",
+          loadProblems: false,
+          loadSolutions: false,
+          loadAlternateSolutions: false
         };
       },
       mounted() {
@@ -70,7 +73,18 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
           var testObject = (test === undefined) ? undefined : test.util;
           var year = parseInt(params.year);
           var alternate = parseInt(params.alternate);
+          var onlyLoad = params.onlyLoad;
 
+          this.loadProblems = true;
+          this.loadSolutions = true;
+          this.loadAlternateSolutions = true;
+
+          if (onlyLoad !== undefined) {
+            this.loadProblems = onlyLoad.includes("+problems;"),
+            this.loadSolutions = onlyLoad.includes("+solutions;"),
+            this.loadAlternateSolutions = onlyLoad.includes("+alternateSolutions;")
+          };
+          
           if (test === undefined) {
             this.endLoad("Test invalid", "This test does not exist.");
           } else if (year === undefined || alternate === undefined) {
@@ -83,7 +97,7 @@ requirejs(["jquery", "math-trainer", "vue"], ($, app, Vue) => {
             this.endLoad("Inputs invalid", "Test is invalid.");
           } else {
             var testID = new app.ytqid(testObject.ClassificationSystem, year, alternate, 1);
-            testObject.Loader.loadTestWithSolutions(testID).then(questions => {
+            testObject.Loader.loadTest(testID, true).then(questions => {
               this.testTitle = testObject.ClassificationSystem.getTestString(testID);
               this.questions = questions;
               this.endLoad();

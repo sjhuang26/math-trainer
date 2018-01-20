@@ -17,6 +17,10 @@ define(() => {
     };
   }
 
+  function parseTestPage(html) {
+    // TODO do this
+  }
+
   function parseQuestionPage(html) {
     // Data is formatted as <h2 /><problem><h2 /><solution 1> [...] <h2 id="See_Also" /><stuff we don't want>.
     // So, the data is chunked into blocks delimited by h2s.

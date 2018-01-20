@@ -32,26 +32,30 @@
           <div class="row">
             <h1>{{ testTitle }}</h1>
           </div>
-          <problem-row v-for="(question, index) in questions"
+          <problem-row v-if="loadProblems" v-for="(question, index) in questions"
               :number="question.questionID.question"
               :content="question.problem"
               :key="index+'a'"></problem-row>
-          <div class="row">
-            <h2>Solutions</h2>
-          </div>
-          <solution-row v-for="(question, index) in questions"
-              :answer="question.answer"
-              :number="index + 1"
-              :solution="question.solutions[0]"
-              :key="index+'b'"></solution-row>
-          <div class="row">
-            <h2>Alternate solutions</h2>
-          </div>
-          <alternate-solution-row v-for="(question, index) in questions"
-              v-if="question.solutions.length > 1"
-              :number="index + 1"
-              :solutions="question.solutions.slice(1)"
-              :key="index+'e'"></alternate-solution-row>
+          <slot v-if="loadSolutions">
+            <div class="row">
+              <h2>Solutions</h2>
+            </div>
+            <solution-row v-for="(question, index) in questions"
+                :answer="question.answer"
+                :number="index + 1"
+                :solution="question.solutions[0]"
+                :key="index+'b'"></solution-row>
+          </slot>
+          <slot v-if="loadAlternateSolutions">
+            <div class="row">
+              <h2>Alternate solutions</h2>
+            </div>
+            <alternate-solution-row v-for="(question, index) in questions"
+                v-if="question.solutions.length > 1"
+                :number="index + 1"
+                :solutions="question.solutions.slice(1)"
+                :key="index+'e'"></alternate-solution-row>
+          </slot>
         </loader>
       </div>
     </template>
