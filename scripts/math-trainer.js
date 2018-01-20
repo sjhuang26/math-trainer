@@ -21,6 +21,16 @@ define([
     {
       major: 2,
       minor: 2,
+      patch: 1,
+      majorAppUpdates: [],
+      minorAppUpdates: [
+        "Fixed a couple bugs involving printing and test validation.",
+        "Improved error handling."
+      ]
+    },
+    {
+      major: 2,
+      minor: 2,
       patch: 0,
       majorAppUpdates: [
         "Added print test feature to user interface.",
