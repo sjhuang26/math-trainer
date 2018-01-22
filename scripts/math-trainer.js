@@ -20,6 +20,21 @@ define([
   var VERSIONS = [
     {
       major: 2,
+      minor: 3,
+      patch: 0,
+      majorAppUpdates: [
+        "Allowed excluding the solutions in generated tests."
+      ],
+      minorAppUpdates: [
+        "Improved the error handling for the test generator."
+      ],
+      majorInternalUpdates: [],
+      minorInternalUpdates: [
+        "Calls to abstract methods now throw an Error object instead of a String."
+      ]
+    },
+    {
+      major: 2,
       minor: 2,
       patch: 1,
       majorAppUpdates: [],
