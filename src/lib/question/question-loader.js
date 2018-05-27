@@ -1,5 +1,10 @@
-define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
-    (wikiQuestionParser, wikiLoader, question, promiseUtil, classificationSystem) => class QuestionLoader {
+import wikiQuestionParser from 'lib/aops-wiki/wiki-question-parser';
+import wikiLoader from 'lib/aops-wiki/wiki-loader';
+import question from 'lib/question/question';
+import PromiseThreadScheduler from 'lib/promise-util';
+import classificationSystem from 'lib/question/classification-system';
+
+export default class QuestionLoader {
   /**
    * @abstract
    */
@@ -62,7 +67,7 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
 
   static loadTestWithSolutions(questionID) {
     // Create the scheduler.
-    var scheduler = new promiseUtil.PromiseThreadScheduler(3, {
+    var scheduler = new PromiseThreadScheduler(3, {
       questionPage: this.undefinedArray(questionID.system.NUM_QUESTIONS)
     });
     
@@ -119,4 +124,4 @@ define(["wiki-question-parser", "wiki-loader", "question", "promise-util"],
       return result;
     });
   }
-});
+};

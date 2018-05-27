@@ -6,16 +6,10 @@
     <title>Math Trainer</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="images/favicon/favicon.ico">
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico">
 
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" crossorigin="anonymous">
-    
-    <!-- Require JS -->
-    <script data-main="scripts/app-main" src="scripts/require.js"></script>
   </head>
   <body>
     <!-- <app-math-trainer> -->
@@ -74,7 +68,7 @@
     <template type="text/x-template" id="template-loader">
       <div>
         <div v-if="isLoading">
-          <img src="images/loading.svg" class="m-auto d-block" />
+          <img src="assets/loading.svg" class="m-auto d-block" />
           <p class="text-center lead font-weight-bold" style="margin-top: -3rem">Loading...</p>
         </div>
         <div v-else-if="isError">
@@ -207,18 +201,22 @@
     <template type="text/x-template" id="template-ytq-classification-selector">
       <form class="form-inline" @submit.prevent="navigate">
         <div class="input-group mb-1 mr-1">
-          <span class="input-group-addon">Year</span>
+          <div class="input-group-prepend">
+            <span class="input-group-text">Year</span>
+          </div>
           <input type="text" class="form-control" v-model.number="year">
           <select class="form-control" v-if="alternates.length !== 0 && isAlternateYear" v-model="alternate">
             <option v-for="(item, index) in alternates" :value="index">{{ item }}</option>
           </select>
           <template v-if="showQuestion">
-            <span class="input-group-addon">Question</span>
-            <span class="input-group-btn">
+            <div class="input-group-append">
+              <span class="input-group-text">Question</span>
+            </div>
+            <span class="input-group-append">
               <button class="btn btn-secondary" :disabled="!canBack" type="button" @click="navigateBack"><i class="material-icons" style="font-size: 80%">&#xE5CB;</i></button>
             </span>
             <input type="text" class="form-control" v-model.number="question">
-            <span class="input-group-btn">
+            <span class="input-group-append">
               <button class="btn btn-secondary" :disabled="!canForward" type="button" @click="navigateForward"><i class="material-icons" style="font-size: 80%">&#xE5CC;</i></button>
             </span>
           </template>

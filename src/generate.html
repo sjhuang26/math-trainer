@@ -5,18 +5,10 @@
     <title>Math Trainer</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="images/favicon/favicon.ico">
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico">
 
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" crossorigin="anonymous">
-
-    <!-- App CSS -->
-    <link rel="stylesheet" href="css/generate-main.css" />
-
-    <script data-main="scripts/generate-main" src="scripts/require.js"></script>
   </head>
   <body>
     <!-- <app-output> -->
@@ -69,7 +61,7 @@
     <template type="text/x-template" id="template-loader">
       <div>
         <div v-if="isLoading">
-          <img src="images/loading.svg" class="m-auto d-block" />
+          <img src="assets/loading.svg" class="m-auto d-block" />
           <p class="text-center lead font-weight-bold" style="margin-top: -3rem">Loading...</p>
         </div>
         <div v-else-if="isError">
