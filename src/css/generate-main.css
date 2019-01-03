@@ -2,4 +2,7 @@
   .content-embed * {
     color: black;
   }
+  .content-embed a {
+    text-decoration: none;
+  }
 }

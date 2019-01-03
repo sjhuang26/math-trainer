@@ -9,6 +9,19 @@ import wikiQuestionParser from './lib/aops-wiki/wiki-question-parser';
 
 var VERSIONS = [
   {
+    major: 3,
+    minor: 0,
+    patch: 0,
+    majorAppUpdates: [
+      "Greatly improved loading times."
+    ],
+    minorAppUpdates: [],
+    majorInternalUpdates: [
+      "Reconfigured the whole project to use Webpack."
+    ],
+    minorInternalUpdates: []
+  },
+  {
     major: 2,
     minor: 3,
     patch: 0,

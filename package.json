@@ -1,8 +1,8 @@
 {
   "name": "math-trainer",
-  "version": "1.0.0",
-  "description": "math-trainer",
-  "main": "index.js",
+  "version": "3.0.0",
+  "description": "Math Trainer is an easy-to-use AMC and AIME viewing interface.",
+  "main": "src/app-main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --config webpack.dev.js",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/sjhuang26/math-trainer.git"
   },
-  "author": "",
+  "author": "sjhuang26@github",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/sjhuang26/math-trainer/issues"
@@ -20,20 +20,20 @@
   "homepage": "https://github.com/sjhuang26/math-trainer#readme",
   "dependencies": {
     "bootstrap": "^4.1.1",
-    "clean-webpack-plugin": "^0.1.19",
-    "copy-webpack-plugin": "^4.5.1",
-    "css-loader": "^0.28.11",
     "jquery": "^3.3.1",
-    "mini-css-extract-plugin": "^0.4.0",
     "popper.js": "^1.14.3",
-    "style-loader": "^0.21.0",
-    "vue": "^2.5.16",
-    "webpack": "^4.9.1",
-    "webpack-cli": "^2.1.4",
-    "webpack-dev-server": "^3.1.4",
-    "webpack-merge": "^4.1.2"
+    "vue": "^2.5.16"
   },
   "devDependencies": {
-    "html-webpack-plugin": "^3.2.0"
+    "webpack-merge": "^4.1.2",
+    "css-loader": "^0.28.11",
+    "style-loader": "^0.21.0",
+    "copy-webpack-plugin": "^4.5.1",
+    "clean-webpack-plugin": "^0.1.19",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.0",
+    "webpack": "^4.9.1",
+    "webpack-cli": "^2.1.4",
+    "webpack-dev-server": "^3.1.4"
   }
 }
